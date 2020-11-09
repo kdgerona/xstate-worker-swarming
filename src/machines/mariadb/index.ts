@@ -1,5 +1,5 @@
 import { Machine } from 'xstate'
 import config from './config'
-import implemantaion from './implementation'
+import implementation from './implementation'
 
-export default Machine(config, implemantaion)
+export default Machine<any,any,any>(config, implementation)
