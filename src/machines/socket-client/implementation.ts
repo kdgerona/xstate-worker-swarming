@@ -8,7 +8,21 @@ const implementation = {
         initializationLog: () => console.log(`${worker_name} is initializing`),
         socketCLientStartedLog: () => console.log(`${worker_name} started`),
         assignSocketInstance: assign({socket: (_: any,event: any) => event.payload}),
-        // sendToParent: sendParent(''),
+        sendToParent: sendParent((_, event: any) => ({
+            type: 'QUERY_TO_DB',
+            payload: event.payload
+        })),
+        emitRequestResult: (context: any, event: any) => {
+            const { socket } = context;
+            socket.emit('REQUEST_RESPONSE', event.payload)
+            // This serve as acknowledgement
+            socket.emit('worker_status', {
+                payload: {
+                    worker_name,
+                    status: 'ready'
+                }
+            })
+        }
     },
     services: {
         initializeSocketCLient: (context: any) => (send: any) => {
@@ -31,10 +45,15 @@ const implementation = {
         socketClientListeners: (context: any) => (send: any) => {
             const { socket } = context
 
-            socket.on('task', (data: any) => {
-                socket.emit('task_acknowledge')
-
-                send({type: 'RECIEVED_TASK', payload: data})
+            socket.on('request', (data: any) => {
+                send({type: 'RECIEVED_REQUEST', payload: data})
+                // This serves as the acknowledgement
+                socket.emit('worker_status', {
+                    payload: {
+                        worker_name,
+                        status: 'working'
+                    }
+                })
             })
         } 
     },

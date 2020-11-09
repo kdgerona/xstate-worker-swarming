@@ -16,7 +16,15 @@ const config = {
                     id: 'startMariaDB',
                     src: 'startMariaDB'
                 }
-            ]
+            ],
+            on: {
+                QUERY_TO_DB: {
+                    actions: ['queryTooDB']
+                },
+                EMIT_RESPONSE: {
+                    actions: ['emitResponse']
+                }
+            }
         }
     }
 }

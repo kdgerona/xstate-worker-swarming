@@ -28,8 +28,11 @@ const config = {
                 src: 'socketClientListeners',
             },
             on: {
-                RECIEVED_TASK: {
+                RECIEVED_REQUEST: {
                     actions: ['sendToParent']
+                },
+                EMIT_REQUEST_RESULT: {
+                    actions: ['emitRequestResult']
                 }
             }
         }

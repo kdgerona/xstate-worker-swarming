@@ -36,6 +36,14 @@ const config = {
             invoke: {
                 id: 'databaseQuery',
                 src: 'databaseQuery',
+            },
+            on: {
+                QUERY_REQUEST: {
+                    actions: ['queryRequest']
+                },
+                QUERY_RESPONSE: {
+                    actions: ['sendToParent']
+                }
             }
         },
     }
