@@ -1,5 +1,5 @@
 import mariadb from 'mariadb'
-import { assign } from 'xstate'
+import { assign, send, sendParent } from 'xstate'
 
 const worker_name = process.env.WORKER_NAME || 'Worker'
 
@@ -10,6 +10,11 @@ const implementation = {
         mariadbStartedLog: () => console.log('databaseStartedLog'),
         errorLog: () => console.log('im mria error'),
         doneLog: () => console.log('im mria done'),
+        queryRequest: send((_: any,event: any) => event, {to: 'databaseQuery'}),
+        sendToParent: sendParent((_, event: any) => ({
+            type: 'EMIT_RESPONSE',
+            payload: event.payload
+        })),
     },
     services: {
         initializeDatabase: (context: any) => async (send: any) => {
@@ -70,6 +75,8 @@ const implementation = {
 
             if(!user_exist) console.log("User doesn't exists")
 
+            // *** COMMENTED FOR NOW ***
+            // send({type: 'QUERY_RESPONSE', payload: user_exist})
             console.log('*** user', user_exist)
         }
     },
